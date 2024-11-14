@@ -15,23 +15,29 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField]
     private float _laneDistance;
     private int _currentLane =1; // 0 = Left, 1 = Middle, 2 = Right
-    private Vector3 _targetPosition;
 
     private void Start()
     {
         _anim.SetBool( "isRunning", true );
+        StartCoroutine( MoveForward() ); // This initial movement added for a more realistic climbing with physics
     }
 
     private void Update()
     {
-        MoveForward();
         HandleLaneSwap();
     }
 
-    private void MoveForward()
+    private IEnumerator MoveForward()
     {
-        Vector3 forwardMovement = Vector3.forward * _movementSpeed * Time.deltaTime;
-        _characterController.Move( forwardMovement );
+        float timeElapsed = 0f;
+        while (timeElapsed < 2f)
+        {
+            Vector3 forwardMovement = Vector3.forward * _movementSpeed * Time.deltaTime;
+            _characterController.Move( forwardMovement );
+            timeElapsed += Time.deltaTime;
+            yield return null;
+        }
+        //After that coroutine our character will stay on his place and objects, background etc. will move like other endless runners
     }
 
     private void HandleLaneSwap()
