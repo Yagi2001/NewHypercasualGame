@@ -11,27 +11,38 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField]
     private float _movementSpeed;
     [SerializeField]
-    private float _turnSmoothTime;
+    private float _swipeSpeed;
     [SerializeField]
-    private Transform _cam;
-    private float _turnSmoothVelocity;
+    private float _laneDistance;
+    private int _currentLane =1; // 0 = Left, 1 = Middle, 2 = Right
+    private Vector3 _targetPosition;
+
+    private void Start()
+    {
+        _anim.SetBool( "isRunning", true );
+    }
 
     private void Update()
     {
-        float horizontal = Input.GetAxisRaw( "Horizontal" );
-        float vertical = Input.GetAxisRaw( "Vertical" );
-        Vector3 direction = new Vector3( horizontal, 0f, vertical ).normalized;
+        MoveForward();
+        HandleLaneSwap();
+    }
 
-        if (direction.magnitude >= 0.05f)
-        {
-            _anim.SetBool( "isRunning", true );
-            float targetAngle = Mathf.Atan2( direction.x, direction.z ) * Mathf.Rad2Deg + _cam.eulerAngles.y;
-            float angle = Mathf.SmoothDampAngle( transform.eulerAngles.y, targetAngle, ref _turnSmoothVelocity,_turnSmoothTime );
-            transform.rotation = Quaternion.Euler( 0f, angle, 0f );
-            Vector3 moveDir = Quaternion.Euler( 0f, targetAngle, 0f ) * Vector3.forward;
-            _characterController.Move( moveDir.normalized * _movementSpeed * Time.deltaTime );
-        }
+    private void MoveForward()
+    {
+        Vector3 forwardMovement = Vector3.forward * _movementSpeed * Time.deltaTime;
+        _characterController.Move( forwardMovement );
+    }
 
-        //Currently there is a bug when it goes to idle state TODO
+    private void HandleLaneSwap()
+    {
+        if ((Input.GetKeyDown( KeyCode.LeftArrow ) || Input.GetKeyDown( KeyCode.A )) && _currentLane > 0)
+            _currentLane--;
+        else if ((Input.GetKeyDown( KeyCode.RightArrow ) || Input.GetKeyDown( KeyCode.D )) && _currentLane < 2)
+            _currentLane++;
+        float targetX = (_currentLane - 1) * _laneDistance;
+        Vector3 targetPosition = new Vector3( targetX, transform.position.y, transform.position.z );
+        Vector3 lateralMovement = Vector3.MoveTowards( transform.position, targetPosition, _swipeSpeed * Time.deltaTime );
+        _characterController.Move( lateralMovement - transform.position );
     }
 }
