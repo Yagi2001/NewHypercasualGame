@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -15,6 +16,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField]
     private float _laneDistance;
     private int _currentLane =1; // 0 = Left, 1 = Middle, 2 = Right
+    public static Action FinishedMoving;
 
     private void Start()
     {
@@ -37,6 +39,7 @@ public class PlayerMovement : MonoBehaviour
             timeElapsed += Time.deltaTime;
             yield return null;
         }
+        FinishedMoving?.Invoke();
         //After that coroutine our character will stay on his place and objects, background etc. will move like other endless runners
     }
 
