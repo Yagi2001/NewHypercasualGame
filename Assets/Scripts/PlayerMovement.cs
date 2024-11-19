@@ -16,16 +16,19 @@ public class PlayerMovement : MonoBehaviour
     private float _laneDistance;
     private int _currentLane =1; // 0 = Left, 1 = Middle, 2 = Right
     public static Action FinishedMoving;
+    private bool _finishedInitialRun;
 
     private void Start()
     {
+        _finishedInitialRun = false;
         _anim.SetBool( "isRunning", true );
         StartCoroutine( MoveForward() ); // This initial movement added for a more realistic climbing with physics
     }
 
     private void Update()
     {
-        HandleLaneSwap();
+        if(_finishedInitialRun)
+            HandleLaneSwap();
     }
 
     private IEnumerator MoveForward()
@@ -39,6 +42,7 @@ public class PlayerMovement : MonoBehaviour
             yield return null;
         }
         FinishedMoving?.Invoke();
+        _finishedInitialRun = true;
         //After that coroutine our character will stay on his place and objects, background etc. will move like other endless runners
     }
 
