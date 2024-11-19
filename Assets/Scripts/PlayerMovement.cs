@@ -43,7 +43,6 @@ public class PlayerMovement : MonoBehaviour
         }
         FinishedMoving?.Invoke();
         _finishedInitialRun = true;
-        //After that coroutine our character will stay on his place and objects, background etc. will move like other endless runners
     }
 
     private void HandleLaneSwap()

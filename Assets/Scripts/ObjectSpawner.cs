@@ -13,6 +13,7 @@ public class ObjectSpawner : MonoBehaviour
 
     private Transform[] _spawnPoints;
     private float _timer;
+    private int _lastSpawnIndex =-1;
 
     void Start()
     {
@@ -37,7 +38,12 @@ public class ObjectSpawner : MonoBehaviour
 
     private void SpawnCoinGroup()
     {
-        int randomIndex = Random.Range( 0, _spawnPoints.Length );
+        int randomIndex;
+        do
+        {
+            randomIndex = Random.Range( 0, _spawnPoints.Length );
+        } while (randomIndex == _lastSpawnIndex);
         Instantiate( _coinGroup, _spawnPoints[randomIndex].position, _spawnPoints[randomIndex].rotation );
+        _lastSpawnIndex = randomIndex;
     }
 }
