@@ -197,6 +197,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _speedMultiplier: 1
   _speedManager: {fileID: 11400000, guid: aed9ca43d610a5b4bb4260d2beb206a1, type: 2}
+  _objectDestroyThreshold: -750
 --- !u!1 &6395211381948431341
 GameObject:
   m_ObjectHideFlags: 0
