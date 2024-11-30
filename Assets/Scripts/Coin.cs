@@ -6,8 +6,7 @@ public class Coin : MonoBehaviour
 {
     private void OnTriggerEnter( Collider other )
     {
-        Debug.Log( "Collected Coin" );
-        // update UI and add sound effects
-        Destroy( gameObject );
+        if(other.CompareTag("Player"))
+            Destroy( gameObject );
     }
 }

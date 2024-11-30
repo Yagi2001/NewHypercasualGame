@@ -7,13 +7,16 @@ public class ObjectSpawner : MonoBehaviour
     [SerializeField]
     private GameObject _coinGroup;
     [SerializeField]
+    private GameObject[] _obstacles;
+    [SerializeField]
     private Transform _spawnPointsParent;
     [SerializeField]
-    private float _spawnInterval = 2f;
+    private GameObject _planeMain;
+    [SerializeField]
+    private float _spawnInterval = 2.5f;
 
     private Transform[] _spawnPoints;
     private float _timer;
-    private int _lastSpawnIndex =-1;
 
     void Start()
     {
@@ -31,19 +34,27 @@ public class ObjectSpawner : MonoBehaviour
         _timer -= Time.deltaTime;
         if (_timer <= 0f)
         {
-            SpawnCoinGroup();
-            _timer = _spawnInterval; 
+            SpawnObject();
+            _timer = _spawnInterval;
         }
     }
 
-    private void SpawnCoinGroup()
+    private void SpawnObject()
     {
-        int randomIndex;
-        do
+        int randomIndex = Random.Range( 0, _spawnPoints.Length );
+        Transform spawnPoint = _spawnPoints[randomIndex];
+
+        float spawnChance = Random.value;
+        if (spawnChance < 0.5f)
         {
-            randomIndex = Random.Range( 0, _spawnPoints.Length );
-        } while (randomIndex == _lastSpawnIndex);
-        Instantiate( _coinGroup, _spawnPoints[randomIndex].position, _spawnPoints[randomIndex].rotation );
-        _lastSpawnIndex = randomIndex;
+            GameObject coinGroupInstance = Instantiate( _coinGroup, spawnPoint.position, spawnPoint.rotation );
+            coinGroupInstance.transform.SetParent( _planeMain.transform );
+        }
+        else
+        {
+            int obstacleIndex = Random.Range( 0, _obstacles.Length );
+            GameObject obstacleInstance = Instantiate( _obstacles[obstacleIndex], spawnPoint.position, spawnPoint.rotation );
+            obstacleInstance.transform.SetParent( _planeMain.transform );
+        }
     }
 }
